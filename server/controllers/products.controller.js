@@ -27,7 +27,7 @@ module.exports.updateProduct = (req, res) => {
         {new: true, runValidators: true}
     )
         .then(res => res.json(res))
-        .catch(err => res.json(err))
+        .catch(err => res.status(400).json(err))
 }
 
 module.exports.deleteProduct = (req, res) => {

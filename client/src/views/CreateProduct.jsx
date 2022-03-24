@@ -1,22 +1,44 @@
 import React, {useState} from 'react'
 import axios from 'axios'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 
-const CreateProduct = () => {
+const CreateProduct = (props) => {
     const [title, setTitle] = useState("")
     const [price, setPrice] = useState(0)
     const [description, setDescription] = useState("")
-    const history = useHistory()
-    const [refresh , setRefresh] = useState(true)
+    //const history = useHistory()
+    //const [refresh , setRefresh] = useState(true)
+    const [errors, setErrors] = useState([])
 
-    const handleSubmit =(e)=>{
+    // 
+    // instead of using winodw.location.relaod to clear form we make new const to set values back to clear after submit
+    const clearForm = () =>{
+        setTitle("")
+        setPrice(0)
+        setDescription("")
+    }
+
+
+
+    const handleSubmit =e=>{
         e.preventDefault()
         axios.post('http://localhost:8000/api/products/new',{title, price, description})
             .then(res=>{
-                setRefresh(!refresh)
+                props.reload()
+                clearForm()
             })
-            .catch(err=>console.log(err));
-            window.location.reload(true);
+            .catch(err=>{
+                // pull errors
+                const errorResponse = err.response.data.errors
+                // set as array
+                const errorArr = []
+                //loop though each key and if error message push to errorArr and set erros as the new arr
+                for( const key of Object.keys(errorResponse)){
+                  errorArr.push(errorResponse[key]["message"]) 
+                }
+                console.log(errorArr)
+                setErrors(errorArr)
+              })
     }
 
     return (
@@ -42,6 +64,14 @@ const CreateProduct = () => {
             </div>
             <button className='btn btn-primary w-25 mt-2'>Create</button>
         </form>
+
+        
+        {
+        errors.map((err, i)=>{
+          return(
+            <p key={i} className="ml-4">{err}</p>
+        )})
+      }
     </div>
   )
 }

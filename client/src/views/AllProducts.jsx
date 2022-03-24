@@ -1,23 +1,17 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import axios from "axios"
 import { Link } from 'react-router-dom'
 
 
-const AllProducts = () => {
-    const [products, setProducts] = useState()
-    const [refresh , setRefresh] = useState(true)
+const AllProducts = (props) => {
+    // we pull products from the props that we pulled in the Main page and set it
+    const { products } = props
 
-    useEffect(()=>{
-        axios.get('http://localhost:8000/api/products')
-            .then(res=>setProducts(res.data))
-            .catch(err=>console.log(err))
-    },[refresh])
-
-
+    //since we already have all products as props we only need the delete function in the page
     const handleDelete=(deleteId)=>{
         axios.delete(`http://localhost:8000/api/products/delete/${deleteId}`)
         .then(res=>{
-            setRefresh(!refresh)
+            props.reload()
         })
         .catch(err=>console.log(err))
 }

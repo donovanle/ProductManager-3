@@ -10,8 +10,9 @@ const EditProduct = () => {
   const history = useHistory()
 
   useEffect(()=>{
-    axios.get(`http://localhost:8000/api/products/${id}`,{title,price,description})
+    axios.get(`http://localhost:8000/api/products/${id}`)
       .then(res=>{
+        // getting res data so we can set the data already in the form inputs
         const product = res.data
         setTitle(product.title)
         setPrice(product.price)
@@ -29,6 +30,10 @@ const EditProduct = () => {
       })
       .catch(err=>console.log(err))
   }
+
+
+  // add edit validations messages / pull into error Array in catch 
+
 
   return (
     <div>
